@@ -1,0 +1,11 @@
+.sessions-list-container {
+  position: relative;
+  min-height: 300px;
+}
+
+.floating-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+}

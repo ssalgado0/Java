@@ -1,0 +1,50 @@
+<app-loading-overlay/>
+<h2 mat-dialog-title>Iniciar sesión</h2>
+
+<mat-divider/>
+
+<form (ngSubmit)="submit()" [formGroup]="form" data-testid="login-form" mat-dialog-content>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Email</mat-label>
+    <input data-testid="email-input"
+           formControlName="email"
+           matInput
+           required
+           type="email"/>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Contraseña</mat-label>
+    <input [type]="hidePassword() ? 'password' : 'text'"
+           data-testid="password-input"
+           formControlName="password"
+           matInput
+           required/>
+    <button
+      data-testid="password-toggle-button"
+      (click)="switchPasswordVisibility()"
+      [attr.aria-label]="'Hide password'"
+      [attr.aria-pressed]="hidePassword()"
+      matIconButton
+      matSuffix
+      type="button"
+    >
+      <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <div mat-dialog-actions>
+    <button (click)="cancel()"
+            data-testid="login-cancel-button"
+            mat-button
+            type="button">
+      Cancelar
+    </button>
+    <button [disabled]="form.invalid || isLoading()"
+            data-testid="login-submit-button"
+            mat-flat-button
+            type="submit">
+      Entrar
+    </button>
+  </div>
+</form>

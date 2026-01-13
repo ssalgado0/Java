@@ -1,0 +1,37 @@
+<mat-card class="profile-card danger-card">
+
+  <h1 class="page-title">Eliminar cuenta</h1>
+
+  <p class="warning-text">
+    ATENCIÓN:
+    Esta acción es <strong>irreversible</strong>.
+    Tu cuenta será eliminada y se perderán todos tus datos para siempre.
+  </p>
+
+  <p>
+    Si aun así deseas continuar, por favor, escribe <strong>"ELIMINAR"</strong>:
+  </p>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Confirmación</mat-label>
+    <input matInput [(ngModel)]="confirmText">
+  </mat-form-field>
+
+  <div class="profile-actions">
+    <button mat-flat-button
+            color="warn"
+            (click)="onDelete()"
+            [disabled]="confirmText !== 'ELIMINAR'">
+      Eliminar cuenta
+    </button>
+
+    <button mat-button routerLink="/profile">
+      Cancelar
+    </button>
+  </div>
+
+  <div *ngIf="error()" class="error-text">
+    {{ error() }}
+  </div>
+
+</mat-card>

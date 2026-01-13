@@ -1,0 +1,177 @@
+.notifications-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+mat-card {
+  margin-top: 16px;
+}
+
+mat-card-header {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+mat-card-title mat-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.header-actions button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 16px;
+}
+
+.loading-container mat-spinner {
+  margin-bottom: 16px;
+}
+
+.loading-container p {
+  color: #666;
+  margin: 0;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 16px;
+  text-align: center;
+}
+
+.empty-state mat-icon {
+  font-size: 72px;
+  width: 72px;
+  height: 72px;
+  color: #ccc;
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.empty-state p {
+  margin: 0;
+  color: #999;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.notifications-table {
+  width: 100%;
+}
+
+.notifications-table th {
+  font-weight: 600;
+  color: #333;
+  background-color: #f5f5f5;
+}
+
+.notifications-table td {
+  padding: 16px 12px;
+}
+
+.unread-row {
+  background-color: #f0f7ff;
+}
+
+.type-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  width: fit-content;
+}
+
+.type-cell mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.type-cell.info {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.type-cell.success {
+  background-color: #e8f5e9;
+  color: #388e3c;
+}
+
+.type-cell.warning {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+.type-cell.error {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.read-chip {
+  background-color: #e0e0e0;
+  color: #666;
+}
+
+.unread-chip {
+  background-color: #1976d2;
+  color: white;
+}
+
+mat-chip {
+  font-size: 12px;
+  min-height: 24px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .notifications-container {
+    padding: 16px;
+  }
+
+  .notifications-table {
+    font-size: 14px;
+  }
+
+  .notifications-table td {
+    padding: 12px 8px;
+  }
+
+  .type-cell span {
+    display: none;
+  }
+}

@@ -1,0 +1,29 @@
+.app-title {
+  font-weight: 500;
+  font-size: 26px;
+  color: white;
+}
+
+.app-navbar {
+  background-color: #8AC4FF;
+  justify-content: space-between;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.menu-button {
+  margin-right: 1rem;
+}
+
+.avatar-button {
+  position: relative;
+  border-radius: 50%;
+  margin-left: 1rem;
+}
+
+.avatar-img {
+  object-fit: cover;
+  border-radius: 50%;
+}

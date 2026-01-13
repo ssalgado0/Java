@@ -1,0 +1,43 @@
+.floating-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 16px 20px;
+  background: white;
+  border-radius: 50px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  text-decoration: none;
+
+  transition: all 0.25s ease;
+}
+
+.check-icon {
+  color: #2ecc71; 
+  transition: color 0.25s ease;
+}
+
+.floating-btn span {
+  color: #333;
+  font-weight: 500;
+  transition: color 0.25s ease;
+}
+
+.floating-btn:hover {
+  background: #e6f9ee; 
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+}
+
+.floating-btn:hover .check-icon {
+  color: #1e9b57; 
+}
+
+.floating-btn:hover span {
+  color: #1e9b57;
+}

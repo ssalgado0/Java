@@ -1,0 +1,125 @@
+<div class="rent-container">
+  <h2>Peticiones de alquiler</h2>
+
+  @if (isLoading) {
+    <div class="loading-shade">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+  }
+
+  @if (!isLoading && bookings.length === 0) {
+    <div class="no-data">
+      <p>No tienes ninguna petición de alquiler activa.</p>
+    </div>
+  }
+
+  @if (bookings.length > 0) {
+    <table [dataSource]="bookings" class="mat-elevation-z8" mat-table multiTemplateDataRows>
+
+      <ng-container matColumnDef="startDate">
+        <th *matHeaderCellDef mat-header-cell> Fecha Inicio</th>
+        <td *matCellDef="let element"
+            data-testid="booking-start-date"
+            mat-cell>
+          {{ element.startDate | date:'dd/MM/yyyy' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="endDate">
+        <th *matHeaderCellDef mat-header-cell> Fecha Fin</th>
+        <td *matCellDef="let element"
+            data-testid="booking-end-date"
+            mat-cell>
+          {{ element.endDate | date:'dd/MM/yyyy' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalPrice">
+        <th *matHeaderCellDef mat-header-cell> Precio</th>
+        <td *matCellDef="let element"
+            class="price-cell"
+            data-testid="booking-total-price"
+            mat-cell>
+          {{ element.totalPrice | currency:'EUR' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th *matHeaderCellDef mat-header-cell> Estado</th>
+        <td *matCellDef="let element"
+            data-testid="booking-status"
+            mat-cell>
+          <mat-chip-set>
+            <mat-chip [class]="'status-' + element.status.toLowerCase()">
+              {{ element.status }}
+            </mat-chip>
+          </mat-chip-set>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="expand">
+        <th *matHeaderCellDef aria-label="row actions" mat-header-cell>&nbsp;</th>
+        <td *matCellDef="let element" mat-cell>
+          <button (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()" aria-label="expand row" data-testid="booking-expand-details-button"
+                  mat-icon-button>
+            <mat-icon>
+              {{ expandedElement === element ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
+            </mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="expandedDetail">
+        <td *matCellDef="let element"
+            [attr.colspan]="columnsToDisplay.length"
+            data-testid="booking-expanded-detail"
+            mat-cell>
+
+          <div [style.display]="element === expandedElement ? 'flex' : 'none'"
+               class="element-detail">
+
+            <div class="inner-table-container">
+              <div class="product-row header">
+                <span>Producto</span>
+                <span>Cant.</span>
+                <span class="align-right">Subtotal</span>
+              </div>
+
+              @for (line of element.lines || []; track line.id) {
+                <div class="product-row" data-testid="booking-expanded-detail-line">
+                <span class="prod-name" data-testid="booking-expanded-detail-product-name">
+                  {{ line.product.name }}
+                </span>
+                  <span data-testid="booking-expanded-detail-quantity">
+                  {{ line.quantity }}
+                </span>
+                  <span class="align-right fw-bold" data-testid="booking-expanded-detail-subtotal">
+                  {{ (line.totalPrice || 0) | currency:'EUR' }}
+                </span>
+                </div>
+              }
+            </div>
+
+          </div>
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="columnsToDisplay" mat-header-row></tr>
+
+      <tr (click)="expandedElement = expandedElement === element ? null : element"
+          (keydown.enter)="expandedElement = expandedElement === element ? null : element"
+          (keydown.space)="expandedElement = expandedElement === element ? null : element"
+          *matRowDef="let element; columns: columnsToDisplay;"
+          [class.expanded-row]="expandedElement === element"
+          class="element-row"
+          data-testid="booking-row"
+          mat-row
+          tabindex="0">
+      </tr>
+
+      <tr *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"
+          data-testid="booking-expanded-details-row"
+          mat-row></tr>
+    </table>
+  }
+</div>

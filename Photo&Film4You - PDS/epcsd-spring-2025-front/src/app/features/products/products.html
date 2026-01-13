@@ -1,0 +1,148 @@
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">Productos</h2>
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <app-date-picker (rangeReseted)="onRangeReseted()"
+                       (rangeSelected)="onRangeSelected($event)"
+                       [selectedRange]="(dateRange$ | async)"/>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <app-table-filter (filterTerm)="onFilterTermChange($event)"/>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+
+  <div class="row g-4 mb-4 product-list-container">
+
+    @if (isProductsLoading()) {
+      <div class="loading-overlay">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+    }
+
+    @for (p of filteredProducts(); track p.id) {
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card h-100 shadow-sm position-relative" data-testid="product-card">
+          @if ((dateRange$ | async) && getAvailability(p) === 0) {
+            <button mat-icon-button
+                    class="position-absolute top-0 end-0 m-2 z-3"
+                    (click)="createAlert(p)"
+                    matTooltip="Avísame cuando esté disponible">
+              <mat-icon>notifications</mat-icon>
+            </button>
+          }
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title text-primary fw-bold" data-testid="product-name">{{ p.name }}</h5>
+            <p class="card-text text-muted">
+              Precio diario: <strong>{{ p.dailyPrice }} €</strong>
+            </p>
+
+            @if (availability) {
+              <p class="card-text text-muted" data-testid="product-availability">
+                Disponibilidad:
+                <strong>{{ getAvailability(p) }} {{ (getAvailability(p) != 'Desconocido') ? 'unidad/es' : '' }}</strong>
+              </p>
+            }
+
+            <div class="row mt-auto">
+              <div class="col">
+                <button [routerLink]="[p.id]"
+                        data-testid="product-details-button"
+                        mat-flat-button>
+                  <mat-icon>visibility</mat-icon>
+                  <span>Ver detalles</span>
+                </button>
+              </div>
+            </div>
+
+            @if (isAdmin()) {
+              <div class="row mt-auto">
+              <div class="col mt-2">
+                <button [routerLink]="[p.id, 'items']"
+                        data-testid="product-items-button"
+                        mat-flat-button>
+                   <mat-icon>info_i</mat-icon>
+                   <span>Ver items</span>
+                 </button>
+              </div>
+              </div>
+              <div class="row mt-auto">
+                <div class="col-6 mt-2 pe-1">
+                  <button [routerLink]="['/products', p.id, 'edit']"
+                          data-testid="edit-product-button"
+                          mat-flat-button
+                          class="w-100">
+                    <mat-icon>edit</mat-icon>
+                    <span>Editar</span>
+                  </button>
+                </div>
+                <div class="col-6 mt-2 ps-1">
+                  <button (click)="$event.stopPropagation(); deleteProduct(p)"
+                          data-testid="delete-product-button"
+                          mat-flat-button
+                          class="w-100"
+                          matTooltip="Eliminar producto">
+                    <mat-icon>delete</mat-icon>
+                    <span>Borrar</span>
+                  </button>
+                </div>
+              </div>
+            }
+
+            @if (currentUser()) {
+              <div class="row mt-2">
+                <div [matTooltipDisabled]="(dateRange$ | async) != null"
+                     [matTooltip]="(dateRange$ | async) == null ? 'Selecciona un rango de fechas para añadir al carrito' : ''"
+                     class="col-12">
+                  <button (click)="addProduct(p)"
+                          data-testid="add-product-button"
+                          [disabled]="(dateRange$ | async) == null || !isPossibleToAddItem(p)"
+                          class="w-100"
+                          matButton="filled">
+                    <mat-icon>add_shopping_cart</mat-icon>
+                    <span>Añadir al carrito</span>
+                  </button>
+                </div>
+              </div>
+            }
+
+          </div>
+        </div>
+      </div>
+    }
+    @empty {
+      <div class="col-12 text-center text-muted">
+        <p>No se encontraron productos que coincidan con el filtro.</p>
+      </div>
+    }
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <mat-paginator
+        (page)="onPaginatorChange($event)"
+        [length]="totalItems()"
+        [pageIndex]="currentPage()"
+        [pageSizeOptions]="[12, 24, 48]"
+        [pageSize]="currentPageSize()"
+        aria-label="Selecciona la página">
+      </mat-paginator>
+    </div>
+  </div>
+</div>
+
+@if (currentUser()?.role === 'ADMIN'){
+  <a class="floating-btn"
+     color="primary"
+     data-testid="create-product-button"
+     mat-fab
+     matTooltip="Crear nuevo producto"
+     routerLink="/products/create">
+  <mat-icon>add</mat-icon>
+</a>
+}

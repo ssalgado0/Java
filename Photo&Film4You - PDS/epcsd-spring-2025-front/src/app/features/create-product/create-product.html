@@ -1,0 +1,108 @@
+<div class="container mt-4">
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()" novalidate class="card p-4 shadow-sm">
+    <h4 class="mb-4 text-center"> {{ isEditMode ? 'Editar producto' : 'Añadir producto' }}</h4>
+
+    <mat-form-field appearance="outline" class="mb-3">
+      <mat-label>Nombre</mat-label>
+      <input data-testid="product-name-input"
+             formControlName="nombre"
+             matInput
+             placeholder="Nombre del producto..."
+             required
+             type="text">
+      <mat-error>El nombre es obligatorio.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="mb-3">
+      <mat-label>Descripción</mat-label>
+      <textarea
+        data-testid="product-description-input"
+        matInput
+        formControlName="descripcion"
+        required
+        placeholder="Describe el producto..."
+        rows="3"
+        type="textarea"></textarea>
+      <mat-error>La descripción es obligatoria.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="mb-3">
+      <mat-label>Precio diario (€)</mat-label>
+      <input data-testid="product-price-input"
+             formControlName="precioDiario"
+             matInput
+             placeholder="Precio del producto..."
+             required
+             type="number">
+      <mat-error>Debe indicar un precio válido (mayor o igual a 0).</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="mb-3">
+      <mat-label>Marca</mat-label>
+      <input data-testid="product-brand-input"
+             formControlName="marca"
+             matInput
+             placeholder="Marca del producto..."
+             required
+             type="text">
+      <mat-error>La marca es obligatoria.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="mb-3">
+      <mat-label>Modelo</mat-label>
+      <input data-testid="product-model-input"
+             formControlName="modelo"
+             matInput
+             placeholder="Modelo del producto..."
+             required
+             type="text">
+      <mat-error>El modelo es obligatorio.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="mb-3">
+      <mat-label>Categoría</mat-label>
+      <mat-select data-testid="product-category-select"
+                  formControlName="categoria"
+                  placeholder="Seleccione una categoría"
+                  required>
+        @for (cat of categories; track cat.id) {
+          <mat-option [value]="cat.id" data-testid="product-category-option">
+            {{ cat.name }}
+          </mat-option>
+        }
+      </mat-select>
+
+      @if (currentUser()?.role === 'ADMIN') {
+        <button
+          (click)="openCreateCategoryDialog($event)"
+          data-testid="create-category-button"
+          matIconButton
+          matSuffix
+          matTooltip="Añadir nueva categoría"
+          type="button">
+          <mat-icon>new_label</mat-icon>
+        </button>
+      }
+      <mat-error>Debe seleccionar una categoría.</mat-error>
+    </mat-form-field>
+
+    <div class="row">
+      <div class="col-6 text-start">
+        <a matButton routerLink="/products">
+          <mat-icon>cancel</mat-icon>
+          <span>Cancelar</span>
+        </a>
+      </div>
+
+      <div class="col-6 text-end">
+        <button [disabled]="productForm.invalid"
+                data-testid="create-product-button"
+                mat-flat-button
+                type="submit">
+          <mat-icon>{{ isEditMode ? 'edit' : 'add_circle' }}</mat-icon>
+          <span>{{ isEditMode ? 'Guardar cambios' : 'Guardar producto' }}</span>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

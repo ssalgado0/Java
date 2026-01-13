@@ -1,0 +1,114 @@
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">Elementos de la sesión digital</h2>
+
+  <div class="row g-4">
+    @if (items.length === 0) {
+      <!--      Empty session -->
+      <div class="alert alert-info text-center" role="alert">
+        <p class="mb-4">
+          La sesión digital no tiene elementos todavía, prueba a añadir un nuevo elemento.
+        </p>
+        <a matButton="filled" routerLink="items/create">Añadir elemento</a>
+      </div>
+    } @else {
+      <!--      Session with items -->
+      <mat-card>
+        <mat-card-content>
+          <table [dataSource]="dataSource" mat-table matSort>
+
+            <ng-container matColumnDef="id">
+              <th *matHeaderCellDef class="fs-6" mat-header-cell mat-sort-header>
+                #
+              </th>
+
+              <td *matCellDef="let item" class="fs-6" data-testid="digital-item-id" mat-cell>
+                {{ item.id }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="description">
+              <th *matHeaderCellDef class="fs-6" mat-header-cell mat-sort-header>
+                Descripción
+              </th>
+
+              <td *matCellDef="let item" class="fs-6" data-testid="digital-item-description" mat-cell>
+                {{ item.description }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lat">
+              <th *matHeaderCellDef class="fs-6" mat-header-cell mat-sort-header>
+                Latitud
+              </th>
+
+              <td *matCellDef="let item" class="fs-6" data-testid="digital-item-lat" mat-cell>
+                {{ item.lat }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lon">
+              <th *matHeaderCellDef class="fs-6" mat-header-cell mat-sort-header>
+                Longitud
+              </th>
+
+              <td *matCellDef="let item" class="fs-6" data-testid="digital-item-lon" mat-cell>
+                {{ item.lon }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="link">
+              <th *matHeaderCellDef class="fs-6" mat-header-cell mat-sort-header>
+                Link
+              </th>
+
+              <td *matCellDef="let item" class="fs-6" data-testid="digital-item-link" mat-cell>
+                <a [href]="item.link" rel="noopener noreferrer" target="_blank">
+                  {{ item.link }}
+                </a>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th *matHeaderCellDef class="fs-6" mat-header-cell mat-sort-header>
+                Estado
+              </th>
+
+              <td *matCellDef="let item" class="fs-6" data-testid="digital-item-status" mat-cell>
+                <span [class]="getStatusClass(item)" class="badge">
+                    {{ item.status | statusLabel }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th *matHeaderCellDef class="fs-6" mat-header-cell>
+                Acciones
+              </th>
+
+              <td *matCellDef="let item" class="fs-6" data-testid="digital-item-actions" mat-cell>
+                <a [routerLink]="['items', item.id, 'edit']"
+                   data-testid="digital-item-edit-button"
+                   mat-icon-button
+                   matTooltip="Editar elemento">
+                  <mat-icon>edit</mat-icon>
+                </a>
+              </td>
+            </ng-container>
+
+            <tr *matHeaderRowDef="columnsToDisplay" mat-header-row></tr>
+            <tr *matRowDef="let items; columns: columnsToDisplay" data-testid="digital-item-row" mat-row></tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</div>
+
+<a class="floating-btn"
+   color="primary"
+   data-testid="create-digital-item-button"
+   mat-fab
+   matTooltip="Añadir elementos a la sesión digital"
+   routerLink="items/create">
+  <mat-icon>add</mat-icon>
+</a>

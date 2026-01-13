@@ -1,0 +1,30 @@
+.profile-card {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.danger-card {
+  border-left: 5px solid #d32f2f;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.warning-text {
+  color: #b71c1c;
+  font-weight: 600;
+}
+
+.profile-actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 12px;
+}
+
+.error-text {
+  color: #d32f2f;
+  margin-top: 10px;
+  font-weight: 600;
+}

@@ -1,0 +1,50 @@
+<div class="page-container">
+
+  <h1 class="page-title">Editar perfil</h1>
+
+  <mat-card class="form-card">
+    <form class="form-layout" [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nombre completo</mat-label>
+        <input matInput formControlName="fullName" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Teléfono</mat-label>
+
+        <input
+          matInput
+          formControlName="phoneNumber"
+          required
+          inputmode="numeric">
+
+        <mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">
+          El teléfono es obligatorio
+        </mat-error>
+
+        <mat-error *ngIf="form.get('phoneNumber')?.hasError('pattern')">
+          Solo se permiten números
+        </mat-error>
+
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="form.invalid || loading()">
+          Guardar cambios
+        </button>
+
+        <button mat-button type="button" routerLink="/profile">
+          Cancelar
+        </button>
+      </div>
+
+      <p class="error" *ngIf="error()">{{ error() }}</p>
+    </form>
+  </mat-card>
+
+</div>

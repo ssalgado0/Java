@@ -1,0 +1,74 @@
+<mat-card class="card">
+  <mat-card-title class="title">Alta de usuario</mat-card-title>
+
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Nombre completo</mat-label>
+        <input matInput formControlName="fullName">
+        <mat-error *ngIf="form.controls['fullName'].touched && form.controls['fullName'].hasError('required')">
+          Requerido
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email">
+        <mat-error *ngIf="form.controls['email'].touched && form.controls['email'].invalid">
+          @if (form.controls['email'].hasError('required')) {
+          Requerido
+          } @else if (form.controls['email'].hasError('email')) {
+          Email inválido
+          } @else if (form.controls['email'].hasError('emailExists')) {
+          Ya existe un usuario con este email
+          }
+        </mat-error>
+
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Teléfono</mat-label>
+        <input matInput
+               formControlName="phoneNumber"
+               inputmode="numeric"
+               pattern="[0-9]*"
+               maxlength="15">
+
+        <mat-error *ngIf="form.controls['phoneNumber'].touched && form.controls['phoneNumber'].invalid">
+          @if (form.controls['phoneNumber'].hasError('required')) {
+          Requerido
+          } @else if (form.controls['phoneNumber'].hasError('pattern')) {
+          Debe contener solo números (9 a 15 dígitos)
+          }
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Contraseña</mat-label>
+        <input matInput type="password" formControlName="password">
+        <mat-error *ngIf="form.controls['password'].touched && form.controls['password'].invalid">
+          Mínimo 8 caracteres
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Rol</mat-label>
+        <mat-select formControlName="role">
+          <mat-option *ngFor="let r of roles" [value]="r">
+            {{ r }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button
+              color="primary"
+              type="submit"
+              class="submit-btn"
+              [disabled]="loading || form.invalid">
+        {{ loading ? 'Creando...' : 'Crear usuario' }}
+      </button>
+
+    </form>
+  </mat-card-content>
+</mat-card>

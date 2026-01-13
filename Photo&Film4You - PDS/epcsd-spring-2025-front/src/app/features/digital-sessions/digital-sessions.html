@@ -1,0 +1,77 @@
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">Sesiones Digitales</h2>
+
+  @if (currentUser()?.role === 'ADMIN') {
+    <div class="row g-4 mb-4">
+      <div class="col-12">
+        <button (click)="toggleViewAllSessions()"
+                data-testid="toggle-view-all-sessions-button"
+                matButton="tonal">
+          <mat-icon>{{ viewAll ? 'visibility' : 'visibility_off' }}</mat-icon>
+          <span>Ver todas las sesiones</span>
+        </button>
+      </div>
+    </div>
+  }
+
+  <div class="row g-4 mb-4 sessions-list-container">
+
+    @for (session of sessions; track session.id) {
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card h-100 shadow-sm" data-testid="session-card">
+          <div class="card-body d-flex flex-column" data-testid="session-card">
+            <h5 class="card-title text-primary fw-bold" data-testid="session-name">{{ session.description }}</h5>
+            <p class="card-text text-muted" data-testid="session-status">
+              Estado: <span [class]="getStatusClass(session)" class="badge">{{ session.status | statusLabel }}</span>
+            </p>
+
+            @if (viewAll) {
+              <p class="card-text text-muted" data-testid="session-email">
+                Email: <strong>{{ session.email }}</strong>
+              </p>
+            }
+
+            <div class="row mt-auto">
+              <div class="col">
+                <a [routerLink]="[session.id]"
+                   data-testid="session-details-button"
+                   mat-flat-button>
+                  <mat-icon>visibility</mat-icon>
+                  <span>Ver detalles</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="row mt-1">
+              <div class="col">
+                <a [routerLink]="[session.id] + '/edit'"
+                   data-testid="session-edit-button"
+                   mat-flat-button>
+                  <mat-icon>edit</mat-icon>
+                  <span>Editar</span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="alert alert-info text-center" role="alert">
+        <p class="mb-4">
+          No se encontraron sesiones digitales. Por favor, pruebe a crear una nueva.
+        </p>
+        <a matButton="filled" routerLink="create">Crear sesión digital</a>
+      </div>
+    }
+  </div>
+</div>
+
+<a class="floating-btn"
+   color="primary"
+   data-testid="create-session-button"
+   mat-fab
+   matTooltip="Crear sesión digital"
+   routerLink="create">
+  <mat-icon>add</mat-icon>
+</a>

@@ -1,0 +1,91 @@
+<div class="container mt-4">
+  <form (ngSubmit)="submit()" [formGroup]="itemForm" class="card p-4 shadow-sm" data-testid="digital-item-form">
+    <h4 class="mb-4 text-center">
+      {{ isEditMode ? 'Editar elemento digital' : 'Crear elemento digital' }}
+    </h4>
+
+    <mat-form-field appearance="outline" class="full-width mb-2">
+      <mat-label>Descripción</mat-label>
+      <textarea data-testid="description-input"
+                formControlName="description"
+                matInput
+                placeholder="Descripción del elemento..."
+                required
+                rows="3"
+                type="textarea">
+      </textarea>
+      <mat-error>
+        La descripción es obligatoria
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width mb-2">
+      <mat-label>Latitud</mat-label>
+      <input data-testid="lat-input"
+             formControlName="lat"
+             matInput
+             placeholder="Latitud del elemento..."
+             required
+             type="number"/>
+      <mat-error>
+        La latitud es obligatoria
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width mb-2">
+      <mat-label>Longitud</mat-label>
+      <input data-testid="lon-input"
+             formControlName="lon"
+             matInput
+             placeholder="Longitud del elemento..."
+             required
+             type="number"/>
+      <mat-error>
+        La longitud es obligatoria
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width mb-2">
+      <mat-label>Enlace</mat-label>
+      <input data-testid="link-input"
+             formControlName="link"
+             matInput
+             placeholder="Enlace al elemento..."
+             required
+             type="url"/>
+      <mat-error>
+        Enlace inválido
+      </mat-error>
+    </mat-form-field>
+
+    <div class="row">
+      <div class="col-6 text-start">
+        <a [routerLink]="['/sessions', sessionId]"
+           data-testid="cancel-button"
+           matButton>
+          <mat-icon>cancel</mat-icon>
+          <span>Cancelar</span>
+        </a>
+      </div>
+      <div class="col-6 text-end">
+        @if (isEditMode) {
+          <button (click)="delete()"
+                  class="mr-2"
+                  data-testid="delete-digital-item-button"
+                  matButton="tonal"
+                  type="button">
+            <mat-icon>delete</mat-icon>
+            <span>Eliminar elemento</span>
+          </button>
+        }
+        <button [disabled]="itemForm.invalid"
+                data-testid="submit-digital-item-button"
+                mat-flat-button
+                type="submit">
+          <mat-icon>{{ isEditMode ? 'edit' : 'add_circle' }}</mat-icon>
+          <span>{{ isEditMode ? 'Guardar cambios' : 'Crear elemento' }}</span>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

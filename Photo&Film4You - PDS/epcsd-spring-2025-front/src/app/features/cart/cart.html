@@ -1,0 +1,142 @@
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">Tu carrito</h2>
+
+  <div class="row g-4">
+    @if (items.length === 0) {
+      <!--      Empty cart-->
+      <div class="alert alert-info text-center" role="alert">
+        <p class="mb-4">
+          Tu carrito está vacío, prueba a añadir algunos productos.
+        </p>
+        <a matButton="filled" routerLink="/products">Ver productos</a>
+      </div>
+
+    } @else {
+      <!--      Cart with items -->
+      <mat-card>
+        <mat-card-content>
+          <table [dataSource]="dataSource" data-testid="cart-summary-table" mat-table>
+
+            <ng-container matColumnDef="name">
+              <th *matHeaderCellDef class="fs-6" mat-header-cell>
+                Producto
+              </th>
+
+              <td *matCellDef="let item" class="fs-6" mat-cell>
+                {{ item.product.name }}
+              </td>
+
+              <td *matFooterCellDef mat-footer-cell></td>
+            </ng-container>
+
+            <ng-container matColumnDef="dailyPrice">
+              <th *matHeaderCellDef class="text-center fs-6" mat-header-cell>
+                Precio diario
+              </th>
+
+              <td *matCellDef="let item" class="text-center fs-6" mat-cell>
+                {{ item.product.dailyPrice | currency:'EUR':'symbol':'1.2-2' }}
+              </td>
+
+              <td *matFooterCellDef mat-footer-cell></td>
+            </ng-container>
+
+            <ng-container matColumnDef="totalPrice">
+              <th *matHeaderCellDef class="text-center fs-6" mat-header-cell>
+                Precio total
+              </th>
+
+              <td *matCellDef="let item" class="text-center fs-6" mat-cell>
+                {{ (item.product.dailyPrice * item.quantity) | currency:'EUR':'symbol':'1.2-2' }}
+              </td>
+
+              <td *matFooterCellDef class="text-center fs-6 fw-light" mat-footer-cell>
+                {{ getTotalCost() | currency:'EUR':'symbol':'1.2-2' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="quantity">
+              <th *matHeaderCellDef class="text-center fs-6" mat-header-cell>
+                Cantidad
+              </th>
+
+              <td *matCellDef="let item" class="text-center fs-6 align-items-center" mat-cell>
+
+                <button (click)="item.quantity > 1 ? decrease(item) : remove(item)"
+                        color="primary"
+                        mat-icon-button
+                        matTooltip="Disminuir cantidad">
+                  <mat-icon>remove</mat-icon>
+                </button>
+
+                <span>{{ item.quantity }}</span>
+
+                <button (click)="increase(item)"
+                        [disabled]="!isPossibleToAddItem(item)"
+                        color="primary"
+                        mat-icon-button
+                        matTooltip="Aumentar cantidad">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </td>
+
+              <td *matFooterCellDef class="text-center fs-6 fw-light" mat-footer-cell>
+                {{ (cart$ | async)?.countItems() }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="availability">
+              <th *matHeaderCellDef class="text-center fs-6" mat-header-cell>
+                Disponibilidad
+              </th>
+
+              <td *matCellDef="let item" class="text-center fs-6" mat-cell>
+                <span [class]="getAvailabilityStatus(item)" class="badge fs-6">
+                  {{ getAvailability(item) }}
+                </span>
+              </td>
+
+              <td *matFooterCellDef mat-footer-cell></td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th *matHeaderCellDef class="text-center" mat-header-cell>
+                Acciones
+              </th>
+
+              <td *matCellDef="let item" class="text-center" mat-cell>
+                <button (click)="remove(item)"
+                        color="warn"
+                        mat-icon-button
+                        matTooltip="Eliminar del carrito">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+
+              <td *matFooterCellDef mat-footer-cell></td>
+            </ng-container>
+
+            <tr *matHeaderRowDef="columnsToDisplay" mat-header-row></tr>
+            <tr *matRowDef="let items; columns: columnsToDisplay" data-testid="cart-row" mat-row></tr>
+            <tr *matFooterRowDef="columnsToDisplay" mat-footer-row></tr>
+          </table>
+        </mat-card-content>
+
+        <mat-card-actions class="justify-content-end">
+          <button (click)="clearCart()"
+                  data-testid="clear-cart-button"
+                  matButton="tonal">
+            <mat-icon>delete_forever</mat-icon>
+            <span>Vaciar carrito</span>
+          </button>
+          <button (click)="checkout()"
+                  data-testid="checkout-button"
+                  matButton="filled">
+            <mat-icon>shopping_cart_checkout</mat-icon>
+            <span>Procesar reserva</span>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    }
+  </div>
+ </div>

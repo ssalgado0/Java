@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>Añadir nueva categoría</h2>
+
+<form (ngSubmit)="onSubmit()" [formGroup]="categoryForm" data-testid="create-category-form">
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nombre</mat-label>
+      <input data-testid="category-name-input"
+             formControlName="name"
+             matInput
+             required
+             type="text"/>
+      <mat-error>El nombre de la categoría es obligatorio</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Descripción</mat-label>
+      <textarea data-testid="category-description-input"
+                formControlName="description"
+                matInput
+                rows="3">
+      </textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="mb-3">
+      <mat-label>Categoría padre</mat-label>
+      <mat-select data-testid="category-parent-category-select"
+                  formControlName="parentCategoryId"
+                  placeholder="Seleccione una categoría padre">
+        <mat-option>Ninguna</mat-option>
+        @for (cat of categories; track cat.id) {
+          <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button (click)="cancel()" matButton="tonal" type="button">
+      Cancelar
+    </button>
+
+    <button [disabled]="categoryForm.invalid"
+            data-testid="submit-create-category-button"
+            matButton="filled"
+            type="submit">
+      Añadir
+    </button>
+  </mat-dialog-actions>
+</form>

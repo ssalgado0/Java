@@ -1,0 +1,12 @@
+<h2 data-testid="product-details-name" mat-dialog-title> {{ data.name }}</h2>
+
+<mat-dialog-content>
+  <p><strong>Marca:</strong> {{ data.brand }}</p>
+  <p><strong>Modelo:</strong> {{ data.model }}</p>
+  <p><strong>Descripción:</strong> {{ data.description }}</p>
+  <p><strong>Precio por día:</strong> {{ data.dailyPrice | currency:'EUR':'symbol' }}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onClose()" color="primary">Cerrar</button>
+</mat-dialog-actions>

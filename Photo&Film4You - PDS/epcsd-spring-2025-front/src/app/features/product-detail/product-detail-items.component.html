@@ -1,0 +1,84 @@
+
+<div class="container mt-4">
+  <div class="mb-3">
+    <button class="btn btn-outline-secondary" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      Volver
+    </button>
+  </div>
+
+  @if (items) {
+
+    <div class="card shadow-sm units-card">
+      <div class="card-header">
+        <h5 class="mb-0">Unidades del Producto</h5>
+      </div>
+      <div class="card-body">
+        @if (items.length === 0) {
+          <p class="text-muted">No hay unidades registradas para este producto.</p>
+        } @else {
+          <table class="table w-100">
+            <thead>
+              <tr>
+                <th>Número de Serie</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of items; track item.serialNumber) {
+                <tr data-testid="item-row">
+                  <td data-testid="item-serial">
+                    {{ item.serialNumber }}
+                  </td>
+                  <td>
+                    <span [ngClass]="getStatusClass(item.status)"
+                          class="status-badge"
+                          data-testid="item-status">
+                      {{ getStatusLabel(item.status) }}
+                    </span>
+                  </td>
+                  <td>
+                    @if (isAdmin()) {
+                      <button (click)="toggleItemStatus(item)"
+                              class="btn btn-outline-primary btn-sm"
+                              data-testid="toggle-item-status-button">
+                        Cambiar Estado
+                      </button>
+                    } @else {
+                      <span class="text-muted">-</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+
+        @if (isAdmin()) {
+          <div class="mt-3">
+            <h6>Añadir unidad</h6>
+            <label htmlFor="newSerial" class="form-label">Número de serie</label>
+            <input [(ngModel)]="newSerial"
+                   class="form-control mb-2"
+                   data-testid="new-item-serial-input"
+                   id="newSerial"
+                   placeholder="Introduce número de serie"
+                   type="text"/>
+
+            <div class="d-flex gap-2">
+              <button (click)="createItem()"
+                      class="btn btn-primary btn-sm"
+                      data-testid="add-item-button">
+                Guardar
+              </button>
+              <button class="btn btn-outline-secondary btn-sm" (click)="resetAddForm()">Cancelar</button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <p>Cargando producto...</p>
+  }
+</div>

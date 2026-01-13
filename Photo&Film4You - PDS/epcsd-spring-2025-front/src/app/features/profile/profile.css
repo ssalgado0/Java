@@ -1,0 +1,30 @@
+.page-title {
+  margin-bottom: 10px;
+}
+
+.profile-card {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.profile-content {
+  margin-top: 10px;
+}
+
+.profile-field {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.profile-field .label {
+  font-weight: 600;
+}
+
+.profile-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}

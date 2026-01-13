@@ -1,0 +1,45 @@
+<mat-card class="profile-card">
+
+  <h1 class="page-title">Mi perfil</h1>
+
+  <ng-container *ngIf="loading()">Cargando...</ng-container>
+  <ng-container *ngIf="error()">{{ error() }}</ng-container>
+
+  <div *ngIf="user() as u" class="profile-content">
+
+    <div class="profile-field">
+      <span class="label">Nombre:</span>
+      <span>{{ u.fullName }}</span>
+    </div>
+
+    <div class="profile-field">
+      <span class="label">Email:</span>
+      <span>{{ u.email }}</span>
+    </div>
+
+    <div class="profile-field">
+      <span class="label">Teléfono:</span>
+      <span>{{ u.phoneNumber }}</span>
+    </div>
+
+    <div class="profile-field">
+      <span class="label">Rol:</span>
+      <span>{{ u.role }}</span>
+    </div>
+
+    <div class="profile-actions">
+      <button mat-flat-button color="primary" routerLink="/profile/edit">
+        Editar perfil
+      </button>
+
+      <button mat-stroked-button color="accent" routerLink="/profile/change-password">
+        Cambiar contraseña
+      </button>
+
+      <button mat-stroked-button color="warn" routerLink="/profile/delete">
+        Eliminar cuenta
+      </button>
+    </div>
+
+  </div>
+</mat-card>

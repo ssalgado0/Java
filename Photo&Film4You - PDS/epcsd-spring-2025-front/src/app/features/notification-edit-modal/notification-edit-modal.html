@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>Gestión de Item Digital</h2>
+
+<mat-dialog-content>
+  @if (loading()) {
+    <div class="loading-state">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Cargando detalles del ítem...</p>
+    </div>
+  } @else if (item()) {
+    <div class="digital-item-info">
+      <p><strong>Descripción:</strong> {{ item()?.description }}</p>
+      <p><strong>Enlace: </strong> <a [href]="item()?.link" target="_blank">{{ item()?.link }}</a></p>
+      <p><strong>Estado:</strong> {{ item()?.status }}</p>
+      <p>Puedes revisar el contenido del ítem de la sesión haciendo click en el enlace.
+        Para cerrar esta notificación <strong>tienes que marcar si habilitar o no este contenido.</strong></p>
+    </div>
+  } @else {
+    <p class="error-text">No se pudo cargar la información del ítem.</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">CANCELAR</button>
+  <button mat-raised-button color="primary" (click)="updateStatus(true)">
+    <mat-icon>check_circle</mat-icon> DISPONIBLE
+  </button>
+  <button mat-raised-button color="warn" (click)="updateStatus(false)">
+    <mat-icon>cancel</mat-icon> NO DISPONIBLE
+  </button>
+</mat-dialog-actions>

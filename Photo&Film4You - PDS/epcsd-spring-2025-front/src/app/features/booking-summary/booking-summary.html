@@ -1,0 +1,97 @@
+<div class="container mt-4" *ngIf="booking as b">
+  <h2 class="mb-4 text-center">Resumen de tu solicitud</h2>
+
+  <mat-card>
+    <mat-card-content>
+
+      <div class="alert alert-success mb-3" role="alert">
+        <h5 class="mb-1">Solicitud realizada correctamente</h5>
+        <p class="mb-0">
+          Solicitud de reserva registrada con éxito. Revisa el siguiente resumen.
+        </p>
+      </div>
+
+      <!-- Datos generales de la reserva -->
+      <div class="mb-3">
+        <p class="mb-1">
+          <strong>Fecha de inicio:</strong>
+          {{ b.startDate | date:'dd/MM/yyyy' }}
+        </p>
+        <p class="mb-1">
+          <strong>Fecha de fin:</strong>
+          {{ b.endDate | date:'dd/MM/yyyy' }}
+        </p>
+        <p class="mb-1">
+          <strong>Número de productos:</strong>
+          {{ b.lines.length || 0 }}
+        </p>
+      </div>
+
+      <!-- Tabla de productos -->
+      <table mat-table [dataSource]="dataSource" class="w-100">
+
+        <!-- Producto -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef class="fs-6">Producto</th>
+          <td mat-cell *matCellDef="let line" class="fs-6">
+            {{ line.product.name }}
+          </td>
+        </ng-container>
+
+        <!-- Precio diario -->
+        <ng-container matColumnDef="dailyPrice">
+          <th mat-header-cell *matHeaderCellDef class="text-center fs-6">
+            Precio diario
+          </th>
+          <td mat-cell *matCellDef="let line" class="text-center fs-6">
+            {{ line.product.dailyPrice | currency:'EUR':'symbol':'1.2-2' }}
+          </td>
+        </ng-container>
+
+        <!-- Cantidad -->
+        <ng-container matColumnDef="quantity">
+          <th mat-header-cell *matHeaderCellDef class="text-center fs-6">
+            Cantidad
+          </th>
+          <td mat-cell *matCellDef="let line" class="text-center fs-6">
+            {{ line.quantity }}
+          </td>
+        </ng-container>
+
+        <!-- Total por producto -->
+        <ng-container matColumnDef="totalItem">
+          <th mat-header-cell *matHeaderCellDef class="text-center fs-6">
+            Total producto
+          </th>
+          <td mat-cell *matCellDef="let line" class="text-center fs-6">
+            {{ (line.totalPrice) | currency:'EUR':'symbol':'1.2-2' }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr *matRowDef="let row; columns: columnsToDisplay" data-testid="booking-detail-row" mat-row></tr>
+
+      </table>
+
+      <div class="d-flex justify-content-end mt-3">
+        <h5 class="mb-0">
+          Total reserva:
+          <strong>{{ totalCost | currency:'EUR':'symbol':'1.2-2' }}</strong>
+        </h5>
+      </div>
+
+    </mat-card-content>
+
+    <mat-card-actions class="justify-content-between">
+      <button matButton="tonal" (click)="goBackToProducts()">
+        <mat-icon>arrow_back</mat-icon>
+        Volver a la tienda
+      </button>
+
+      <button matButton="filled" color="primary" routerLink="/products">
+        <mat-icon>check_circle</mat-icon>
+        Finalizar
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

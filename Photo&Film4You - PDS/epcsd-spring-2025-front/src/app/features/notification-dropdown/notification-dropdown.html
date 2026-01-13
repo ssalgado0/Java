@@ -1,0 +1,80 @@
+<button
+  data-testid="notification-button"
+  [matMenuTriggerFor]="notificationMenu"
+  [matBadge]="unreadCount()"
+  [matBadgeHidden]="unreadCount() === 0"
+  matBadgeColor="warn"
+  aria-label="Notificaciones"
+  class="menu-button"
+  (menuOpened)="onMenuOpened()"
+  mat-mini-fab>
+  <mat-icon>notifications</mat-icon>
+</button>
+
+<mat-menu #notificationMenu="matMenu" class="notification-menu">
+  <div class="notification-header" mat-menu-item disabled>
+    <h3>Notificaciones</h3>
+  </div>
+  <mat-divider></mat-divider>
+
+  @if (notifications().length === 0) {
+    <div class="no-notifications" mat-menu-item disabled data-testid="no-notifications-message">
+      <mat-icon>notifications_none</mat-icon>
+      <p>No hay notificaciones</p>
+    </div>
+  } @else {
+    @for (notification of notifications(); track notification.id) {
+      <div
+        class="notification-item"
+        (click)="handleNotificationClick(notification)"
+        (keydown.enter)="handleNotificationClick(notification)"
+        (keydown.space)="$event.preventDefault(); handleNotificationClick(notification)"
+        [class.clickable]="notification.entity === 'DIGITAL_ITEM'"
+        [class.unread]="!notification.read"
+        [attr.data-testid]="'notification-item-' + notification.id"
+        mat-menu-item>
+        <div class="notification-content">
+          <div class="notification-icon-wrapper" [ngClass]="getNotificationColor(notification.type)">
+            <mat-icon>{{ getNotificationIcon(notification.type) }}</mat-icon>
+          </div>
+          <div class="notification-text">
+            <strong>{{ notification.title }}</strong>
+            <p>{{ notification.message }}</p>
+            <small>{{ notification.createdAt | date: 'dd/MM/yyyy HH:mm' }}</small>
+          </div>
+          @if (!notification.read) {
+            <button
+              mat-icon-button
+              class="mark-read-btn"
+              data-testid="mark-read-button"
+              (click)="markAsRead(notification, $event)"
+              aria-label="Marcar como leída">
+              <mat-icon>done</mat-icon>
+            </button>
+          }
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+    }
+
+    @if (unreadCount() > 0) {
+      <button
+        mat-menu-item
+        class="mark-all-btn"
+        data-testid="mark-all-read-button"
+        (click)="markAllAsRead()">
+        <mat-icon>done_all</mat-icon>
+        <span>Marcar todas como leídas</span>
+      </button>
+    }
+
+    <button
+      mat-menu-item
+      class="view-all-btn"
+      data-testid="view-all-notifications-button"
+      (click)="viewAllNotifications()">
+      <mat-icon>visibility</mat-icon>
+      <span>Ver más notificaciones</span>
+    </button>
+  }
+</mat-menu>

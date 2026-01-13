@@ -1,0 +1,75 @@
+<mat-toolbar class="app-navbar" data-testid="navbar">
+  <a mat-button routerLink="/">
+    <span class="app-title">Photo&Film4You</span>
+  </a>
+  <span class="spacer"></span>
+
+  <a class="menu-button" matButton="tonal" routerLink="/products">
+    <span>Productos</span>
+  </a>
+
+  @if (currentUser()) {
+
+    @if (isAdmin()) {
+    <a class="menu-button" matButton="tonal" routerLink="/users/create">
+      <span>Alta usuario</span>
+    </a>
+    }
+
+  <a class="menu-button" matButton="tonal" routerLink="/sessions">
+      <span>Sesiones</span>
+    </a>
+
+    <a [matBadgeHidden]="(cart$ | async) == null || (cart$ | async)?.countItems() === 0"
+       data-testid="cart-button"
+       [matBadge]="(cart$ | async) != null ? (cart$ | async)?.countItems() : 0"
+       aria-label="Carrito de reservas"
+       class="menu-button"
+       matMiniFab routerLink="/cart">
+      <mat-icon>shopping_cart</mat-icon>
+    </a>
+
+    <app-notification-dropdown></app-notification-dropdown>
+
+    <button [matMenuTriggerFor]="profileMenu"
+            aria-label="Perfil de usuario"
+            class="menu-button avatar-button"
+            data-testid="avatar-button"
+            mat-mini-fab>
+
+      <img ngSrc="{{ avatarUrl(currentUser()?.fullName) }}"
+           width="40"
+           height="40"
+           alt="avatar"
+           class="avatar-img">
+    </button>
+
+    <mat-menu #profileMenu="matMenu">
+      <button mat-menu-item routerLink="/profile">
+        <mat-icon>account_circle</mat-icon>
+        <span>Perfil de usuario</span>
+      </button>
+      <button mat-menu-item routerLink="/alerts">
+        <mat-icon>alarm</mat-icon>
+        <span>Mis alertas</span>
+      </button>
+      <button mat-fab mat-menu-item routerLink="/bookings">
+        <mat-icon>view_timeline</mat-icon>
+        <span>Peticiones de alquiler</span>
+      </button>
+      <button (click)="logout()"
+              data-testid="logout-button"
+              mat-menu-item>
+        <mat-icon>logout</mat-icon>
+        <span>Cerrar sesión</span>
+      </button>
+    </mat-menu>
+  } @else {
+    <button (click)="openLoginDialog()"
+            class="menu-button"
+            data-testid="login-button"
+            matButton="filled">
+      Iniciar sesión
+    </button>
+  }
+</mat-toolbar>
