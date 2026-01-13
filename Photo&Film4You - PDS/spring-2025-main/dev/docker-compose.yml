@@ -1,0 +1,73 @@
+name: 'pds-grupo-a9-infrastructure'
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    platform: linux/amd64
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    platform: linux/amd64
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:9092
+      - 19092:19092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092, CONNECTIONS_FROM_HOST://localhost:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  productdb:
+    image: postgres:14.19
+    platform: linux/amd64
+    ports:
+      - "${PRODUCT_DB_PORT}:5432"
+    environment:
+      POSTGRES_USER: ${PRODUCT_DB_USER}
+      POSTGRES_PASSWORD: ${PRODUCT_DB_PASSWORD}
+      POSTGRES_DB: ${PRODUCT_DB_NAME}
+
+  userdb:
+    image: postgres:14.19
+    platform: linux/amd64
+    ports:
+      - "${USER_DB_PORT}:5432"
+    environment:
+      POSTGRES_USER: ${USER_DB_USER}
+      POSTGRES_PASSWORD: ${USER_DB_PASSWORD}
+      POSTGRES_DB: ${USER_DB_NAME}
+
+  digitaldb:
+    image: postgres:14.19
+    platform: linux/amd64
+    ports:
+      - "${DIGITAL_DB_PORT}:5432"
+    environment:
+      POSTGRES_USER: ${DIGITAL_DB_USER}
+      POSTGRES_PASSWORD: ${DIGITAL_DB_PASSWORD}
+      POSTGRES_DB: ${DIGITAL_DB_NAME}
+
+  notificationdb:
+    image: postgres:14.19
+    platform: linux/amd64
+    ports:
+      - "${NOTIFICATION_DB_PORT}:5432"
+    environment:
+      POSTGRES_USER: ${NOTIFICATION_DB_USER}
+      POSTGRES_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
+      POSTGRES_DB: ${NOTIFICATION_DB_NAME}
+
+  adminer:
+    image: adminer
+    platform: linux/amd64
+    ports:
+      - 18080:8080

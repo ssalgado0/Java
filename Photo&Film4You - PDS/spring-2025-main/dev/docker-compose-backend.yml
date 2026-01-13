@@ -1,0 +1,238 @@
+name: 'pds-grupo-a9-backend'
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    platform: linux/amd64
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    platform: linux/amd64
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:9092
+      - 19092:19092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092, CONNECTIONS_FROM_HOST://localhost:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  productdb:
+    image: postgres:14.19
+    platform: linux/amd64
+    ports:
+      - "${PRODUCT_DB_PORT}:5432"
+    environment:
+      POSTGRES_USER: ${PRODUCT_DB_USER}
+      POSTGRES_PASSWORD: ${PRODUCT_DB_PASSWORD}
+      POSTGRES_DB: ${PRODUCT_DB_NAME}
+
+  userdb:
+    image: postgres:14.19
+    platform: linux/amd64
+    ports:
+      - "${USER_DB_PORT}:5432"
+    environment:
+      POSTGRES_USER: ${USER_DB_USER}
+      POSTGRES_PASSWORD: ${USER_DB_PASSWORD}
+      POSTGRES_DB: ${USER_DB_NAME}
+
+  digitaldb:
+    image: postgres:14.19
+    platform: linux/amd64
+    ports:
+      - "${DIGITAL_DB_PORT}:5432"
+    environment:
+      POSTGRES_USER: ${DIGITAL_DB_USER}
+      POSTGRES_PASSWORD: ${DIGITAL_DB_PASSWORD}
+      POSTGRES_DB: ${DIGITAL_DB_NAME}
+
+  notificationdb:
+    image: postgres:14.19
+    platform: linux/amd64
+    ports:
+      - "${NOTIFICATION_DB_PORT}:5432"
+    environment:
+      POSTGRES_USER: ${NOTIFICATION_DB_USER}
+      POSTGRES_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
+      POSTGRES_DB: ${NOTIFICATION_DB_NAME}
+
+  adminer:
+    image: adminer
+    platform: linux/amd64
+    ports:
+      - 18080:8080
+
+  product-service:
+    image: registry.gitlab.com/uoc/pdp-pds/pdp_pds_2025_2026/pds_2025_2026_a9/epcsd-spring-2025-productcatalog-solution:${PRODUCT_SERVICE_IMAGE_TAG}
+    platform: linux/amd64
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:$$SERVER_PORT/actuator/health || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    depends_on:
+      - productdb
+      - kafka
+    ports:
+      - "${PRODUCT_SERVICE_PORT}:${PRODUCT_SERVICE_PORT}"
+    environment:
+      DB_HOST: ${PRODUCT_DB_HOST}
+      DB_PORT: 5432
+      DB_NAME: ${PRODUCT_DB_NAME}
+      DB_USER: ${PRODUCT_DB_USER}
+      DB_PASSWORD: ${PRODUCT_DB_PASSWORD}
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+      SERVER_PORT: ${PRODUCT_SERVICE_PORT}
+      USER_SERVICE_URL: ${USER_SERVICE_URL}
+      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+
+  user-service:
+    image: registry.gitlab.com/uoc/pdp-pds/pdp_pds_2025_2026/pds_2025_2026_a9/epcsd-spring-2025-user-solution:${USER_SERVICE_IMAGE_TAG}
+    platform: linux/amd64
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:$$SERVER_PORT/actuator/health || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    depends_on:
+      - userdb
+    ports:
+      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
+    environment:
+      DB_HOST: ${USER_DB_HOST}
+      DB_PORT: 5432
+      DB_NAME: ${USER_DB_NAME}
+      DB_USER: ${USER_DB_USER}
+      DB_PASSWORD: ${USER_DB_PASSWORD}
+      SERVER_PORT: ${USER_SERVICE_PORT}
+      USER_SERVICE_URL: ${USER_SERVICE_URL}
+      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      PRODUCT_SERVICE_URL: ${PRODUCT_SERVICE_URL}
+      PRODUCT_SERVICE_PORT: ${PRODUCT_SERVICE_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+
+  notification-service:
+    image: registry.gitlab.com/uoc/pdp-pds/pdp_pds_2025_2026/pds_2025_2026_a9/epcsd-spring-2025-notification-solution:${NOTIFICATION_SERVICE_IMAGE_TAG}
+    platform: linux/amd64
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:$$SERVER_PORT/actuator/health || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    depends_on:
+      - notificationdb
+      - kafka
+    ports:
+      - "${NOTIFICATION_SERVICE_PORT}:${NOTIFICATION_SERVICE_PORT}"
+    environment:
+      DB_HOST: ${NOTIFICATION_DB_HOST}
+      DB_PORT: 5432
+      DB_NAME: ${NOTIFICATION_DB_NAME}
+      DB_USER: ${NOTIFICATION_DB_USER}
+      DB_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+      SERVER_PORT: ${NOTIFICATION_SERVICE_PORT}
+      USER_SERVICE_URL: ${USER_SERVICE_URL}
+      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      PRODUCT_SERVICE_URL: ${PRODUCT_SERVICE_URL}
+      PRODUCT_SERVICE_PORT: ${PRODUCT_SERVICE_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      DIGITAL_SERVICE_URL: ${DIGITAL_SERVICE_URL}
+      DIGITAL_SERVICE_PORT: ${DIGITAL_SERVICE_PORT}
+
+  digital-service:
+    image: registry.gitlab.com/uoc/pdp-pds/pdp_pds_2025_2026/pds_2025_2026_a9/epcsd-spring-2025-digital-solution:${DIGITAL_SERVICE_IMAGE_TAG}
+    platform: linux/amd64
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:$$SERVER_PORT/actuator/health || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    depends_on:
+      - digitaldb
+      - kafka
+    ports:
+      - "${DIGITAL_SERVICE_PORT}:${DIGITAL_SERVICE_PORT}"
+    environment:
+      DB_HOST: ${DIGITAL_DB_HOST}
+      DB_PORT: 5432
+      DB_NAME: ${DIGITAL_DB_NAME}
+      DB_USER: ${DIGITAL_DB_USER}
+      DB_PASSWORD: ${DIGITAL_DB_PASSWORD}
+      SERVER_PORT: ${DIGITAL_SERVICE_PORT}
+      USER_SERVICE_URL: ${USER_SERVICE_URL}
+      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+
+  auth-service:
+    image: registry.gitlab.com/uoc/pdp-pds/pdp_pds_2025_2026/pds_2025_2026_a9/pds-auth-solution:${AUTH_SERVICE_IMAGE_TAG}
+    platform: linux/amd64
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:$$SERVER_PORT/actuator/health || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    ports:
+      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
+    environment:
+      SERVER_PORT: ${AUTH_SERVICE_PORT}
+      USER_SERVICE_URL: ${USER_SERVICE_URL}
+      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+
+  gateway-service:
+    image: registry.gitlab.com/uoc/pdp-pds/pdp_pds_2025_2026/pds_2025_2026_a9/pds-gateway-solution:${GATEWAY_SERVICE_IMAGE_TAG}
+    platform: linux/amd64
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:$$SERVER_PORT/actuator/health || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    depends_on:
+      product-service:
+        condition: service_healthy
+      user-service:
+        condition: service_healthy
+      notification-service:
+        condition: service_healthy
+      digital-service:
+        condition: service_healthy
+      auth-service:
+        condition: service_healthy
+    ports:
+      - "${GATEWAY_SERVICE_PORT}:${GATEWAY_SERVICE_PORT}"
+    environment:
+      SERVER_PORT: ${GATEWAY_SERVICE_PORT}
+      USER_SERVICE_URL: ${USER_SERVICE_URL}
+      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      PRODUCT_SERVICE_URL: ${PRODUCT_SERVICE_URL}
+      PRODUCT_SERVICE_PORT: ${PRODUCT_SERVICE_PORT}
+      NOTIFICATION_SERVICE_URL: ${NOTIFICATION_SERVICE_URL}
+      NOTIFICATION_SERVICE_PORT: ${NOTIFICATION_SERVICE_PORT}
+      DIGITAL_SERVICE_URL: ${DIGITAL_SERVICE_URL}
+      DIGITAL_SERVICE_PORT: ${DIGITAL_SERVICE_PORT}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
